@@ -12,7 +12,7 @@ Receive SMS on his desk in order to use the content.
 - SMS sending
 
 - SMS are created on one machine (1 or more) on the network.
-    - They are then published to a public or private MQTT mail server
+    - They are then published to a public or private MQTT server
     - The messages are received on an MQTT client installed on the laptop (1 or more).
     - The messages are then sent to the recipients.
 
