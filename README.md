@@ -10,8 +10,8 @@ Send and receive SMS or notification to a smartphone destination from any deskto
 ##### SMS emission
 
     - SMS or notifications are created on one machine (1 or more) on the net.
-        - Messages are then published to a public or private MQTT server
-        - Smsquitto MQTT client installed on the smartphone gateway (1 or more), then receive and send these messages to recipients.
+    - Messages are then published to a public or private MQTT server
+     - Smsquitto MQTT client installed on the smartphone gateway (1 or more), then receive and send these messages to recipients.
 
 #### SMS reception
 
@@ -20,9 +20,9 @@ Send and receive SMS or notification to a smartphone destination from any deskto
 
 #### Non-exhaustive use
 
-- Email message usage
-- Receive and process alert messages (IOT or other)
-- etc ...
+    - Email message usage
+    - Receive and process alert messages (IOT or other)
+    - etc ...
 
 #### Conditions for receiving or sending
 - Take a public or private MQTT server to relay messages
@@ -64,6 +64,7 @@ The following python packages will be installed:
 - supervisor
 - rsa >> https://stuvel.eu/python-rsa-doc/
 
+
 ### Installation procedure
 
 After installing termux on the laptop, launch Termux
@@ -76,11 +77,11 @@ After installing termux on the laptop, launch Termux
         cp -f $PACKAGE/smsquitto-st* $HOME/.termux/tasks/&&cp -f $PACKAGE/smsquitto/smsquitto-conf.yaml $HOME/.termux/&&
         pip install $PACKAGE/dist/smsquitto-$VERSION.tar.gz
 
-- Enter to start the installation
+- Enter to start installation
 
 ### Installation parameters
 
-- The installation parameters are in ~/.termux/smsquitto-conf.yaml
+- Installation parameters are in ~/.termux/smsquitto-conf.yaml
     - host: ip or domain of the MQTT server
     - port: 1883 or 8883
     - keepalive: 60
@@ -106,7 +107,7 @@ After installing termux on the laptop, launch Termux
 
 ### Uses
 
-- A MQTT client is required to operate the phone.
+- A MQTT client is required to the phone.
     - The smsquittod.py module gives an example of a client written in python.
         - Library is the Eclipse foundation paho-mqtt
         - Simply implemente ClientMQTTBase class
@@ -118,7 +119,7 @@ After installing termux on the laptop, launch Termux
             - by an address of this type
                 - file: ///path/to/file/sms-client.html
 
-- demonstration
+- Demonstration
 
      - sms-client.html is fully functional
      - You just have to update the apikey in this file and in the configuration file on the smartphone
