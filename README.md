@@ -11,7 +11,8 @@ Send and receive SMS or notification to a smartphone destination from any deskto
 
     - SMS or notifications are created on one machine (1 or more) on the net.
     - Messages are then published to a public or private MQTT server
-     - Smsquitto MQTT client installed on the smartphone gateway (1 or more), then receive and send these messages to recipients.
+    - Smsquitto MQTT client installed on the smartphone gateway (1 or more)
+        - receive and send these messages to recipients.
 
 #### SMS reception
 
