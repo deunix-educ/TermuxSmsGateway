@@ -56,33 +56,56 @@ https://github.com/termux/termux-app
     - Termux: API
     - Termux: Widget
 
+<<<<<<< Upstream, based on origin/main
 #### MQTT client installing:
+=======
+
+#### Installing the mqtt client:
+>>>>>>> 5d3172f README install
 
 The following python packages will be installed:
 
 - termux-sms-gateway
 - paho-mqtt
 - supervisor
+<<<<<<< Upstream, based on origin/main
+=======
+	- supervisor is a process control system
+	- because Android do not support hard links, it will be necessary to patch  http.py from library
+>>>>>>> 5d3172f README install
 - rsa >> https://stuvel.eu/python-rsa-doc/
 
 
 ### Installation procedure
 
-After installing termux on the laptop, launch Termux
+After installing termux on the smartphone, launch Termux
 
 - Copy and paste the following command in the termux terminal
 
-        export PACKAGE="TermuxSmsGateway"&&export VERSION="1.0"&&mkdir -p $HOME/.termux/tasks&&
-        apt install termux-api git -y&&rm -rf termux-sms-gateway&&
-        git clone &&
-        cp -f $PACKAGE/smsquitto-st* $HOME/.termux/tasks/&&cp -f $PACKAGE/smsquitto/smsquitto-conf.yaml $HOME/.termux/&&
-        pip install $PACKAGE/dist/smsquitto-$VERSION.tar.gz
+        export PACKAGE="TermuxSmsGateway"&&
+		export VERSION="1.0"&&
+		mkdir -p $HOME/.termux/tasks&&
+        apt install python git termux-api -y&&
+		rm -rf TermuxSmsGateway&&
+        git clone https://github.com/deunix-educ/TermuxSmsGateway.git&&
+        cp -f $PACKAGE/smsquitto-install/smsquitto-st* $HOME/.termux/tasks/&&
+		cp -f $PACKAGE/smsquitto/smsquitto-conf.yaml $HOME/.termux/&&
+		cp -f $PACKAGE/smsquitto-install/supervisor/supervisord $HOME/.termux/boot/&&
+		cp -f $PACKAGE/smsquitto-install/supervisor/supervisord.conf $PREFIX/etc/&&
+		cp -f $PACKAGE/smsquitto-install/supervisor/smsquitto.conf $PREFIX/etc/supervisor.d/&&
+        pip install $PACKAGE/dist/smsquitto-$VERSION.tar.gz&&
+		cd $PREFIX/lib/python3.9/site-packages/supervisor&&
+		patch < $PACKAGE/smsquitto-install/supervisor/patch/http.py.patch
 
 - Enter to start installation
 
 ### Installation parameters
 
+<<<<<<< Upstream, based on origin/main
 - Installation parameters are in ~/.termux/smsquitto-conf.yaml
+=======
+- smsquitto server parameters are in ~/.termux/smsquitto-conf.yaml
+>>>>>>> 5d3172f README install
     - host: ip or domain of the MQTT server
     - port: 1883 or 8883
     - keepalive: 60
@@ -96,11 +119,9 @@ After installing termux on the laptop, launch Termux
             - ex: SQTT010203040506079
 
 - Copy and paste the following command in the terminal
-
         nano $HOME/.termux/smsquitto-conf.yaml
 
 - Install services (start, stop, status)
-
      - Install the Tremux widget:Widget on the phone's desktop by keeping your finger on the screen
      - Choose shortcut
      - Change the icon and the name if you want
@@ -134,11 +155,13 @@ After installing termux on the laptop, launch Termux
 
     - Notification
         - script://notify.sh #FIELD1 #FIELD2 #FIELD3 #FIELD4 #TO #MESSAGE --tls or nothing
-            - /usr/bin/python3 /home/pi/domoticz/scripts/notify.py --method=notify --host=$1 --port=$2 --user=$3 --password=$4 --apikey=$5 --text="$6" $7
+		- command
+			- /usr/bin/python3 /home/pi/domoticz/scripts/notify.py --method=notify --host=$1 --port=$2 --user=$3 --password=$4 --apikey=$5 --text="$6" $7
 
     - SMS
         - script://notify.sh #FIELD1 #FIELD2 #FIELD3 #FIELD4 #TO #MESSAGE "00330645953706,0033791246318" --tls or nothing
-            - /usr/bin/python3 /home/pi/domoticz/scripts/smsquitto.py --method=sms --host=$1 --port=$2 --user=$3 --password=$4 --apikey=$5 --text="$6" --phone="$7" $8
+			- command
+            	- /usr/bin/python3 /home/pi/domoticz/scripts/smsquitto.py --method=sms --host=$1 --port=$2 --user=$3 --password=$4 --apikey=$5 --text="$6" --phone="$7" $8
 
     - SSL certification
         - argument --tls, in $7 or $8.

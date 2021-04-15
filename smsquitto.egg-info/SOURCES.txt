@@ -1,0 +1,12 @@
+LICENSE
+README.md
+setup.cfg
+setup.py
+./smsquitto/__init__.py
+./smsquitto/smsquitto-conf.yaml
+./smsquitto/smsquittod.py
+smsquitto.egg-info/PKG-INFO
+smsquitto.egg-info/SOURCES.txt
+smsquitto.egg-info/dependency_links.txt
+smsquitto.egg-info/requires.txt
+smsquitto.egg-info/top_level.txt

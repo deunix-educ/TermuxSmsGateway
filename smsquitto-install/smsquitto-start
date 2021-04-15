@@ -1,2 +1,4 @@
-#
-/data/data/com.termux/files/usr/bin/python3 -m smsquitto.smsquittod $HOME/.termux/ &>/dev/null
+#!/data/data/com.termux/files/usr/bin/bash
+#/data/data/com.termux/files/usr/bin/python3 -m smsquitto.smsquittod $HOME/.termux/ &>/dev/null
+
+data/data/com.termux/files/usr/bin/supervisorctl stop termux_workers:smsquitto

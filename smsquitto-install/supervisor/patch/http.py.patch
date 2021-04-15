@@ -1,0 +1,11 @@
+--- http-origine.py	2021-04-15 23:41:09.333691030 +0200
++++ http.py	2021-04-15 23:40:49.734284135 +0200
+@@ -575,7 +575,7 @@
+                 os.chmod(tempname, sockchmod)
+                 try:
+                     # hard link
+-                    os.link(tempname, socketname)
++                    os.symlink(tempname, socketname)
+                 except OSError:
+                     # Lock contention, or stale socket.
+                     used = self.checkused(socketname)
