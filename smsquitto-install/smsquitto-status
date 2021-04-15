@@ -1,0 +1,7 @@
+#!/data/data/com.termux/files/usr/bin/bash
+PID=$(ps -aux | grep smsquittod | grep -v grep | awk '{print $2}')
+if [ -z $PID ]; then
+    echo "Service smsquittod is not running"
+else
+    termux-notification --sound --title "Smsquitto" --content "Service smsquittod is running pid: $PID"
+fi

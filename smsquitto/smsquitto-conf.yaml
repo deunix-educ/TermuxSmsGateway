@@ -1,0 +1,9 @@
+settings:
+    host: broker.emqx.io
+    port: 1883
+    keepalive: 60
+    username: emqx
+    password: public
+    useSSL: False
+    ca_cert: None
+    apikey: SQTT0192837495867

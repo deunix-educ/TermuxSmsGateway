@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Notify</title>
+        <meta name="description" content="Mqtt Notification client">
+        <meta name="author" content="<deunix@e-educ.fr>">
+        <script src="static/js/jquery.min.js"></script>
+        <script src="static/js/mqttws31.js"></script>
+        <script src="static/js/custom.js"></script>
+        <script>
+        var apikey   = getUrlParameter('apikey');
+        var mqttHost = getUrlParameter('host');
+        var mqttPort = getUrlParameter('port');
+        var mqttUser = getUrlParameter('user');
+        var mqttPass = getUrlParameter('pass');
+        var method   = getUrlParameter('method');
+        var msg      = getUrlParameter('text');
+        var topic    = apikey + '/pub/' + method;
+        var mobile   = getUrlParameter('phone');
+        var payload  = { msg: msg };
+        if(method=='sms') {
+            payload.mobile = JSON.stringify(mobile.split(','));
+        }
+
+        </script>
+    </head>
+    <body style="background: #333">
+	<script>
+	    var mqttc= null;
+	    function onMessageCallback(message)        { }
+	    function onDisconnectionCallback(response) { }
+	    function onConnectionCallback()            { if(msg) mqttc.publishMessage(topic, payload); }
+	    var callbacks = {onMessageCallback: onMessageCallback,onConnectionCallback: onConnectionCallback,onDisconnectionCallback: onDisconnectionCallback};
+	    var mosquitto = {host: mqttHost, port: parseInt(mqttPort), reconnectTimeout: 5, userName: mqttUser, password: mqttPass, cleanSession: true, keepAliveInterval: 60};
+	    var options = $.extend(mosquitto, {subs: [[ apikey + '/emit/#', 0],]});
+	    mqttc = new MqttClientClass(options, callbacks);
+	    mqttc.connect();
+	</script>
+	</body>
+</html>
+

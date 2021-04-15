@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Sms Mqtt Client</title>
+        <meta name="description" content="Mqtt client">
+        <meta name="author" content="<deunix@e-educ.fr>">
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+        <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.min.js"></script>
+        <script>
+        //======================================================
+        // some useful functions
+        function toFloat(value, n) {
+            return parseFloat(value).toFixed(n);
+        }
+
+        function toDecimal(value, n) {
+            return parseInt(value).toFixed(n);
+        }
+
+        function b64_to_utf8( str ) {
+          return decodeURIComponent(escape(window.atob( str )));
+        }
+
+        function format_date(unixtimestamp) {
+            var date = new Date(1000*parseInt(unixtimestamp));
+            var dateString =
+            date.getUTCFullYear() + "/" +
+            ("0" +(date.getUTCMonth()+1)).slice(-2)+ "/" +
+            ("0" + date.getUTCDate()).slice(-2) + " " +
+            ("0" + date.getUTCHours()).slice(-2) + ":" +
+            ("0" + date.getUTCMinutes()).slice(-2) + ":" +
+            ("0" + date.getUTCSeconds()).slice(-2);
+          return dateString;
+        }
+    function locale_date(unixtimestamp) {
+      var date = new Date(1000*parseInt(unixtimestamp));
+      var dateString =
+      date.getFullYear() + "/" +
+      ("0" +(date.getMonth()+1)).slice(-2)+ "/" +
+      ("0" + date.getDate()).slice(-2) + " " +
+      ("0" + date.getHours()).slice(-2) + ":" +
+      ("0" + date.getMinutes()).slice(-2) + ":" +
+      ("0" + date.getSeconds()).slice(-2);
+      return dateString;
+    }
+        function getUrlParameter(sParam) {
+            var sPageURL = window.location.search.substring(1),
+                sURLVariables = sPageURL.split('&'),
+                sParameterName,
+                i;
+            for (i = 0; i < sURLVariables.length; i++) {
+                sParameterName = sURLVariables[i].split('=');
+                if (sParameterName[0] === sParam) {
+                    return sParameterName[1] === undefined ? true : decodeURIComponent(sParameterName[1]);
+                }
+            }
+        }
+        //===========Your parameters here ==================================
+        var apikey = "SQTT123456789";
+        var mqttHost = "broker.emqx.io";
+        var mqttPort = 8083;
+        var mqttUser = "emqx";
+        var mqttPass = "public";
+        var mqttTopic= apikey + '/pub';
+        var mqttSubs = [
+            [ apikey + '/emit/#', 0],
+        ];
+
+        //===================================================================
+        /*
+         * My Web mqtt client
+         *
+         * Copyright (c) 2018 deunix@e-educ.fr
+         *
+         *  MIT License
+         *
+         *	Permission is hereby granted, free of charge, to any person obtaining a copy
+         *	of this software and associated documentation files (the "Software"), to deal
+         *	in the Software without restriction, including without limitation the rights
+         *	to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+         *	copies of the Software, and to permit persons to whom the Software is
+         *	furnished to do so, subject to the following conditions:
+         *
+         *	The above copyright notice and this permission notice shall be included in all
+         *	copies or substantial portions of the Software.
+         *
+         *	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+         *	IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+         *	FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+         *	AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+         *	LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+         *	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+         *	SOFTWARE.
+         */
+        var MQTT_RETAIN		= true;
+        var MQTT_NO_RETAIN  = false;
+        var QOS_AT_MOST_ONCE  =	0;
+        var QOS_AT_LEAST_ONCE =	1;
+        var QOS_EXACTLY_ONCE  =	2;
+
+        var MqttClientClass = function MqttClient(options, callbacks) {
+            var self = this;
+            var defaults = {
+                host: "127.0.0.1",
+                port: 1884,
+                reconnectTimeout: 5,	// seconds
+                subs: [],
+                datas: [],
+                //
+                userName: null,
+                password: null,
+                onSuccess: onConnect,
+                onFailure: onFailure,
+                useSSL: false,
+                cleanSession: true,
+                timeout: 30,
+                keepAliveInterval: 60,
+            };
+
+            var defaultCallbacks = {
+                onMessageCallback: onMessageArrived,
+                onConnectionLostCallback: onConnectionLost,
+                onConnectionCallback: null,
+                onDisconnectionCallback: null,
+                onSubscribeCallback: null,
+                onPublishCallback: null,
+                onSynMessageCallback: null,
+                onAckMessageCallback: null,
+                onPongMessageCallback: null,
+            };
+            var mqtt = null;
+            var opt = $.extend(defaults, options);
+            var cbk = $.extend(defaultCallbacks, callbacks);
+            var reconnectTimeout = opt.reconnectTimeout * 1000; delete opt.reconnectTimeout;
+
+            this.callbacks = cbk;
+            this.datas = opt.datas; delete opt.datas;
+            this.clid = "pahoJsCli_" + $.now();
+            this.host = opt.host; delete opt.host;
+            this.port = opt.port; delete opt.port;
+            this.subs = opt.subs; delete opt.subs;
+
+            // private methods
+            //
+            function MQTTconnect() {
+                mqtt = new Paho.MQTT.Client(self.host, self.port, self.clid);
+                mqtt.onConnectionLost = cbk.onConnectionLostCallback;
+                mqtt.onMessageArrived = cbk.onMessageCallback;
+                mqtt.connect(opt);
+            }
+
+            function MQTTsubscribe() {
+                $.each(self.subs, function(i, sub) {
+                    mqtt.subscribe(sub[0], {qos: sub[1]});
+                    if (cbk.onSubscribeCallback)
+                        (cbk.onSubscribeCallback(sub[0], sub[1]));
+                });
+            }
+
+            function onFailure(message) {
+                console.log("Connection failed: " + message.errorMessage + ". Retrying...");
+                setTimeout(MQTTconnect, reconnectTimeout);
+            }
+
+            function onConnect() {
+                console.log('Connected to ' + self.host + ':' + self.port + "\nId: "+ self.clid);
+                if (cbk.onConnectionCallback)
+                    cbk.onConnectionCallback();
+                MQTTsubscribe();
+            }
+
+            function onConnectionLost(response) {
+                if (cbk.onDisconnectionCallback)
+                    cbk.onDisconnectionCallback(response);
+                console.log("Connection lost: " + response.errorMessage + ". Reconnecting...");
+                setTimeout(MQTTconnect, reconnectTimeout);
+            }
+
+            function onMessageArrived(message) {
+                var topic = message.destinationName;
+                var payload = message.payloadString;
+                //console.log(topic +"\n"+ payload);
+            }
+
+            function MQTTpublish(topic, payload, qos, retained) {
+                if (cbk.onPublishCallback)
+                    cbk.onPublishCallback(payload);
+                mqtt.send(topic, payload, qos, retained);
+                console.log(topic +"\n"+ payload);
+            }
+
+            function MQTTdeleteRetainedMessage(topic) {
+                mqtt.send(topic, "", 0, true);
+            }
+
+            function MQTTpublishMessage(topic, payload) {
+                var msg = (typeof payload == 'undefined' || payload == null) ? {evt: topic}: payload;
+                MQTTpublish(topic, JSON.stringify(msg), QOS_AT_LEAST_ONCE, MQTT_NO_RETAIN);
+            }
+
+            // public methods
+            //
+            this.connect	 = function() 								{ MQTTconnect(); 			};
+            this.disconnect  = function() 								{ mqtt.disconnect(); 		};
+            this.isConnected = function() 								{ return mqtt.connected; 	};
+            this.suscribe 	 = function(filter, subscribeOptions) 		{ mqtt.suscribe(filter, subscribeOptions); 		};
+            this.unsubscribe = function(filter, unsubscribeOptions)		{ mqtt.unsuscribe(filter, unsubscribeOptions); 	};
+            this.publish 	 = function(topic, payload, qos, retained) 	{ MQTTpublish(topic, payload, qos, retained); 	};
+            this.publishMessage = function(topic, payload) 				{ MQTTpublishMessage(topic, payload); 			};
+            this.deleteRetainedMessage = function(topic) 				{ MQTTdeleteRetainedMessage(topic); 			};
+        };
+        </script>
+    </head>
+    <body class="body-style" style="background: #333">
+        <div class="container-fluid">
+			<div class="navbar navbar-expand-sm bg-dark navbar-dark">
+			    <div class="container-fluid">
+			        <a class="navbar-brand band_name" href="#">
+			            <img src="https://pbs.twimg.com/profile_images/1512652562/mqtticon-large_400x400.png" width="24px" height="24px"/>&nbsp;
+			            <span class="small">
+			                Send SMS<br>
+			                <i class="cnx text-danger small">Server:&nbsp;<b><span class="host"></span></b></i>
+			            </span>
+			            <button class="btn btn-danger btn-sm" onclick="killService();">Stop service</button>
+			        </a>
+			    </div>
+			</div>
+
+			<div class="row">
+			    <div class="col">
+			        <div class="text-light">
+			            date: <span class="time"></span> <span class="start"></span><br>
+			            latitude: <span class="latitude"></span> °<br>
+			            longitude: <span class="longitude"></span> °<br>
+			            altitude: <span class="altitude"></span> m<br>
+
+			            <button class="btn btn-warning" onclick="geopos();">Location</button>
+			        </div>
+                </div>
+
+                <div class="col">
+                    <div class="text-light">
+			            Subject<br><input type="text" id="sub"></input><br>
+			            Message<br><textarea id="msg" rows="4" cols="32" ></textarea><br>
+			            Recipientss<br>
+			            <input type="tel" id="to" placeholder="+33123456789"></input><br>
+			            Send multiple<br>
+			            <select id="dest" multiple>
+							<option value="+33789123456">+33789123456 Robert</option>
+							<option value="0033654321987">0033654321987 Lucie</option>
+				        </select>
+			            <div class="d-flex">
+			                <div><button class="btn btn-primary m-1" onclick="send();">Send SMS</button></div>
+			                <div><button class="btn btn-warning m-1" onclick="notify();">Send notification</button></div>
+			            </div>
+                    </div>
+                </div>
+                <div class="col">
+		            <table id="sms"class="table table-striped text-light mt-1">
+		                <thead>
+		                    <tr>
+		                      <td>Date</td>
+		                      <td>Origine</td>
+		                      <td>Number</td>
+		                      <td>Message</td>
+		                      <td>Status</td>
+		                    </tr>
+		                </thead>
+		                <tbody></tbody>
+		            </table>
+		            <button class="btn btn-primary m-1" onclick="inbox();">Get messages</button>
+			    </div>
+			</div>
+
+	   </div>
+	   <script>
+	    //===================================================================
+	    // program
+	    //===================================================================
+	    var mqttc= null;
+	    var container = $('#sms > tbody');
+
+	    function updateDatas(payload) {
+	        $.each(payload, function(k, v) {
+	            switch (k) {
+	                case ("time"):
+	                   $('span.'+ k).text(locale_date(v));
+	                    break;
+	                default:
+	                    $('span.'+ k).text(v);
+	                    break;
+	            }
+	        });
+	    }
+
+	    function addLine(topic, payload) {
+	        var c =
+	        '<tr>' +
+	            '<td>'+locale_date(payload.time)+'</td>'+
+	            '<td>'+payload.sender+'</td>'+
+	            '<td>'+payload.number+'</td>'+
+	            '<td>'+payload.body+'</td>'+
+	            '<td>'+(payload.read ? 'Oui': 'Non')+'</td>'
+	        '</tr>';
+	        container.prepend(c);
+	    }
+
+	    function onMessageCallback(message) {
+	        var payload = message.payloadString;
+	        var topic = message.destinationName;
+	        var p = JSON.parse(payload);
+	        var n = topic.lastIndexOf('/');
+	        var evt = topic.substring(n+1);
+	        //console.log(topic); console.log(p);console.log(evt);
+	        if (evt == 'inbox') {
+	            addLine(topic, p)
+	        } else {
+	            updateDatas(p);
+	        }
+	    }
+	    function onConnectionCallback() {
+	        $('.cnx').removeClass('text-danger').addClass('text-success');
+	        $('span.host').text(mqttc.host +":"+ mqttc.port);
+	    }
+
+	    function onDisconnectionCallback(response) {
+	        $('.cnx').removeClass('text-success').addClass('text-danger');
+	    }
+
+	    var callbacks = {
+	        onMessageCallback: onMessageCallback,
+	        onConnectionCallback: onConnectionCallback,
+	        onDisconnectionCallback: onDisconnectionCallback,
+	    };
+
+	    var mosquitto = {
+	        host: mqttHost,
+	        port: mqttPort,
+	        reconnectTimeout: 5,
+	        userName: mqttUser,
+	        password: mqttPass,
+	        cleanSession: true,
+	        keepAliveInterval: 60,
+	    };
+	    var options = $.extend(mosquitto, {subs: mqttSubs});
+	    mqttc = new MqttClientClass(options, callbacks);
+	    mqttc.connect();
+
+	    function send() {
+	        var msg = $('#msg').val();
+	        var mobiles = $('#dest').val();
+	        var phone = $('#to').val();
+	        if (phone)
+	            mobiles.push(phone);
+	        if (msg && mobiles)
+	            mqttc.publishMessage(mqttTopic + '/sms', {mobile:JSON.stringify(mobiles), subject: $('#sub').val(), msg:msg});
+	    }
+	    function notify() {
+	        var msg = $('#msg').val();
+	        if (msg)
+	            mqttc.publishMessage(mqttTopic + '/notify', { subject: $('#sub').val(), msg:msg});
+	    }
+	    function geopos() {
+            mqttc.publishMessage(mqttTopic + '/location', {});
+	    }
+	    // 'all','inbox','sent','draft','outbox'
+	    function inbox() {
+            $("#sms > tbody tr").remove();
+	        mqttc.publishMessage(mqttTopic + '/all', {});
+	    }
+        function killService() {
+            mqttc.publishMessage(mqttTopic + '/kill-service', {});
+        }
+	    </script>
+	</body>
+</html>
+
