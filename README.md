@@ -1,10 +1,10 @@
-# termux-sms-gateway
-SMS and notification gateway from Android smartphone
+# Termux Sms Gateway
+SMS and notification gateway using Android smartphone
 
 #### Goal:
 
-Make any laptop with an Internet connection an SMS gateway
-Send SMS from his desktop from a web interface or other.
+Make any laptop with an Internet connection a SMS gateway
+Send SMS from his desktop using a web interface or other.
 Receive SMS on his desk in order to use the content.
 
 #### Method used
@@ -18,13 +18,8 @@ Receive SMS on his desk in order to use the content.
 
 #### SMS reception
 
-- The SMS are received on the mobile and published to the MQTT server
-- The messages are received on an MQTT client installed on the subscribed machine (1 or more)
-
-#### Conditions for receiving or sending
-
-- Take a public or private MQTT server to relay messages
-- Subscribe MQTT clients to the same topics
+- The SMS are received on the smartphone and published to the MQTT server
+- The messages are received on a MQTT client installed on the subscribed machine (1 or more)
 
 #### Non-exhaustive use
 
@@ -45,12 +40,7 @@ Receive SMS on his desk in order to use the content.
 > We may need to encrypt the content for security reasons.
 >> Use encryption with public key / private key on clients
 
-#### Non-exhaustive use
-- Complement of the email message
-- Receive and process alert messages (IOT or other)
-- etc ...
-
-### Installation
+### Smartphone installation
 
 https://github.com/termux/termux-app
 
@@ -92,14 +82,14 @@ After installing termux on the laptop, launch Termux
 
 ### Installation parameters
 
-- The installation parameters are in ~ / .termux / smsquitto-conf.yaml
+- The installation parameters are in ~/.termux/smsquitto-conf.yaml
     - host: ip or domain of the MQTT server
     - port: 1883 or 8883
     - keepalive: 60
     - username: login
     - password: password
     - useSSL: False or True
-    - ca_cert: path/of/file/ca.cert
+    - ca_cert: path/to/file/ca.cert
     - apikey: *string*
 
         - ** IMPORTANT **: This key is used to synchronize the topics with the subscriptions
@@ -109,32 +99,32 @@ After installing termux on the laptop, launch Termux
 
         nano $HOME/.termux/smsquitto-conf.yaml
 
-- Install the service
+- Install services (start, stop, status)
 
      - Install the Tremux widget:Widget on the phone's desktop by keeping your finger on the screen
      - Choose shortcut
      - Change the icon and the name if you want
-     - Start the service by clicking the icon
+     - Start, Stop, or Status service by clicking the icon
 
 ### Uses
 
-- An MQTT client is required to operate the phone.
+- A MQTT client is required to operate the phone.
     - The smsquittod.py module gives an example of a client written in python.
-        - The library used is that of the Eclipse foundation: pahon-mqtt
-        - It will suffice to implement the ClientMQTTBase class
+        - Library is the Eclipse foundation paho-mqtt
+        - Simply implemente ClientMQTTBase class
 
-    - The sms-client-test.html file is another example but in websocket mode.
-        - It will suffice to directly modify the html file
-        - we launch it directly in a browser
+    - The sms-client.html file is another example but in websocket mode.
+        - Directly modify the sms-client.html file
+        - Launch it directly in a browser
             - by drag and drop
             - by an address of this type
-                - file: ///path/du/fichier/sms-client.html
+                - file: ///path/to/file/sms-client.html
 
 - demonstration
 
-     - sms-client-test.html is fully functional
-     - You just have to update the apikey in this file and in the configuration file on the mobile phone
-     - And set up some mobile numbers to do the tests
+     - sms-client.html is fully functional
+     - You just have to update the apikey in this file and in the configuration file on the smartphone
+     - Set up some mobile numbers to do the tests
 
 ### Domotiz
 
@@ -148,28 +138,28 @@ After installing termux on the laptop, launch Termux
 
     - SMS
         - script://notify.sh #FIELD1 #FIELD2 #FIELD3 #FIELD4 #TO #MESSAGE "00330645953706,0033791246318" --tls or nothing
-            - /usr/bin/python3 /home/pi/domoticz/scripts/notify.py --method=sms --host=$1 --port=$2 --user=$3 --password=$4 --apikey=$5 --text="$6" --phone="$7" $8
+            - /usr/bin/python3 /home/pi/domoticz/scripts/smsquitto.py --method=sms --host=$1 --port=$2 --user=$3 --password=$4 --apikey=$5 --text="$6" --phone="$7" $8
 
     - SSL certification
         - argument --tls, in $7 or $8.
-        - the certification key is in domoticz/scripts/notify.py. Thinking of modifying it.
+        - the certification key is in domoticz/scripts/smsquitto.py.
 
     - You must install python3 paho-mqtt library: pip3 install paho-mqtt
 
-### Orders
+### API methods
 
-Messages sent and received on the phone are in this form
+Message sent and received format:
 
 - (topic, payload)
-    - topic: is a character string that starts with apikey see above
+    - topic: is a string that starts with apikey see above
         - apikey/pub/sms
         - apikey/emit/inbox
     - payload: is a Json string
         - {mobile: [mobile1, mobile2, etc ...], subject: "the subject", msg: "the message"}
         - {time: time, payload: payload}
-- orders
-    - apikey/pub/sms send an sms
-    - apikey/pub/notify send notification to phone
+- topics
+    - apikey/pub/sms send SMS
+    - apikey/pub/notify send notification
     - apikey/pub/location request for Geographic positioning
-    - apikey/pub/inbox or all or sent or draft or outbox Read SMS
-    - apikey/pub/kill-service stop the service on the phone
+    - apikey/pub/inbox or all or sent or draft or outbox Read SMS message
+    - apikey/pub/kill-service stop the service
