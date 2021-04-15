@@ -3,23 +3,20 @@ SMS and notification gateway using Android smartphone
 
 #### Goal:
 
-Make any laptop with an Internet connection a SMS gateway
-Send SMS from his desktop using a web interface or other.
-Receive SMS on his desk in order to use the content.
+Send and receive SMS or notification to a smartphone destination from any desktop using a web interface or other client.
 
 #### Method used
 
-- SMS sending
+##### SMS emission
 
-- SMS are created on one machine (1 or more) on the network.
-    - They are then published to a public or private MQTT server
-    - The messages are received on an MQTT client installed on the laptop (1 or more).
-    - The messages are then sent to the recipients.
+    - SMS or notifications are created on one machine (1 or more) on the net.
+        - Messages are then published to a public or private MQTT server
+        - Smsquitto MQTT client installed on the smartphone gateway (1 or more), then receive and send these messages to recipients.
 
 #### SMS reception
 
-- The SMS are received on the smartphone and published to the MQTT server
-- The messages are received on a MQTT client installed on the subscribed machine (1 or more)
+    - SMS received on the smartphone gateway are published to a MQTT server.
+    - A MQTT client installed on a machine (1 or more) that have subscribed to a valid topic receive these messages
 
 #### Non-exhaustive use
 
@@ -44,33 +41,34 @@ Receive SMS on his desk in order to use the content.
 
 https://github.com/termux/termux-app
 
-#### Installation of termux
+#### Termux installation
 - Termux application obtained by F-Droid:
     - https://www.f-droid.org/fr/
 
 - Or by google store:
     - https://play.google.com/
 
-> IMPORTANT: We will choose either one or the other.
+> IMPORTANT: You must choose either one or the other repository.
 
 - Install
     - Termux
     - Termux: API
     - Termux: Widget
 
-#### Installing the mqtt client:
+#### MQTT client installing:
 
 The following python packages will be installed:
 
 - termux-sms-gateway
 - paho-mqtt
+- supervisor
 - rsa >> https://stuvel.eu/python-rsa-doc/
 
 ### Installation procedure
 
 After installing termux on the laptop, launch Termux
 
-- Copy and paste the following command in the terminal
+- Copy and paste the following command in the termux terminal
 
         export PACKAGE="TermuxSmsGateway"&&export VERSION="1.0"&&mkdir -p $HOME/.termux/tasks&&
         apt install termux-api git -y&&rm -rf termux-sms-gateway&&
