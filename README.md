@@ -109,6 +109,7 @@ After installing termux on the smartphone, launch Termux
             - ex: SQTT010203040506079
 
 - Copy and paste the following command in the terminal
+
         nano $HOME/.termux/smsquitto-conf.yaml
 
 - Install services (start, stop, status)
