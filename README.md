@@ -57,9 +57,12 @@ https://github.com/termux/termux-app
     - Termux: Widget
 
 <<<<<<< Upstream, based on origin/main
+<<<<<<< Upstream, based on origin/main
 #### MQTT client installing:
 =======
 
+=======
+>>>>>>> 721d3c3 REAME install
 #### Installing the mqtt client:
 >>>>>>> 5d3172f README install
 
