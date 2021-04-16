@@ -11,10 +11,10 @@ Receive SMS on his desk in order to use the content.
 
 #### Send SMS or Notification
 
-	- SMS are created on one machine (1 or more) on the network.
-	    - They are then published to a public or private MQTT server
-	    - The messages are received on an MQTT client installed on the laptop (1 or more).
-	    - The messages are then sent to the recipients.
+- SMS are created on one machine (1 or more) on the network.
+    - They are then published to a public or private MQTT server
+    - The messages are received on an MQTT client installed on the laptop (1 or more).
+    - The messages are then sent to the recipients.
 
 #### SMS reception
 
@@ -51,15 +51,14 @@ https://github.com/termux/termux-app
 - Or by google store:
     - https://play.google.com/
 
-> IMPORTANT: We will choose either one or the other.
+> IMPORTANT: You must choose either one or the other repository
 
 - Install
     - Termux
     - Termux: API
     - Termux: Widget
 
-
-#### Installing the mqtt client:
+#### MQTT client installation
 
 The following python packages will be installed:
 
@@ -74,7 +73,7 @@ The following python packages will be installed:
 
 After installing termux on the smartphone, launch Termux
 
-- Copy and paste the following command in the terminal
+- Copy and paste the following command in the Termux terminal
 
         export PACKAGE="TermuxSmsGateway"&&
 		export VERSION="1.0"&&
@@ -93,9 +92,9 @@ After installing termux on the smartphone, launch Termux
 
 - Enter to start the installation
 
-### Installation parameters
+### Configuration server installation
 
-- smsquitto server parameters are in ~/.termux/smsquitto-conf.yaml
+- smsquitto config server are in ~/.termux/smsquitto-conf.yaml
     - host: ip or domain of the MQTT server
     - port: 1883 or 8883
     - keepalive: 60
@@ -112,7 +111,7 @@ After installing termux on the smartphone, launch Termux
         nano $HOME/.termux/smsquitto-conf.yaml
 
 - Install services (start, stop, status)
-     - Install the Tremux widget:Widget on the phone's desktop by keeping your finger on the screen
+     - Install Tremux widget:Widget on the phone's by keeping your finger on the screen
      - Choose shortcut
      - Change the icon and the name if you want
      - Start, Stop, or Status service by clicking the icon
@@ -137,9 +136,11 @@ After installing termux on the smartphone, launch Termux
      - You just have to update the apikey in this file and in the configuration file on the smartphone
      - Set up some mobile numbers to do the tests
 
-### Domotiz
+### Domotiz notification
 
 - https://www.domoticz.com/wiki/Getting_started
+
+##### Below is the integration process
 
 - Send notification from custom HTTP/Action
 
