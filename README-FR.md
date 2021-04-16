@@ -123,6 +123,13 @@ Après avoir installé termux sur le smartphone, lancez Termux
       - Changez l'icône et le nom si vous le souhaitez
       - Démarrez, arrêtez ou service d'état en cliquant sur l'icône
 
+- supervisor pour  démarrer et stopper smsquitto
+
+	- Vous pouvez utiliser http://127.0.0.1:9001 aussi
+
+		- login: root
+		- password: toor
+
 ### Usage
 
 - Un client MQTT est nécessaire pour faire fonctionner le téléphone.
