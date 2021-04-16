@@ -88,7 +88,8 @@ After installing termux on the smartphone, launch Termux
 		cp -f $PACKAGE/smsquitto-install/supervisor/smsquitto.conf $PREFIX/etc/supervisor.d/&&
         pip install $PACKAGE/dist/smsquitto-$VERSION.tar.gz&&
 		cd $PREFIX/lib/python3.9/site-packages/supervisor&&
-		patch < $PACKAGE/smsquitto-install/supervisor/patch/http.py.patch
+		patch < $HOME/$PACKAGE/smsquitto-install/supervisor/patch/http.py.patch&&
+		cd ~
 
 - Enter to start the installation
 
