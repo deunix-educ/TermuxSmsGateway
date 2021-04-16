@@ -8,7 +8,7 @@ Envoyez des SMS depuis son bureau en utilisant une interface web ou autre.
 Recevoir des SMS sur son bureau afin d'utiliser le contenu.
 
 
-#### Method used
+#### Methode utilisée
 
 #### Emission de SMS ou de Notification
 
@@ -25,7 +25,7 @@ Recevoir des SMS sur son bureau afin d'utiliser le contenu.
 
 #### Utilisation non exhaustive
 
-- Utilisation des e-mails
+- Messagerie comme le courriel
 - Recevoir et traiter les messages d'alerte (IOT ou autre)
 - etc ...
 
@@ -97,7 +97,8 @@ Après avoir installé termux sur le smartphone, lancez Termux
 
 ### Configuration du server
 
-- configuration smsquitto >> ~/.termux/smsquitto-conf.yaml
+- configuration smsquitto --> ~/.termux/smsquitto-conf.yaml
+
     - host: ip or domain serveur MQTT
     - port: 1883 or 8883
     - keepalive: 60
@@ -111,10 +112,12 @@ Après avoir installé termux sur le smartphone, lancez Termux
             - ex: SQTT010203040506079
 
 - Copiez et collez la commande suivante dans le terminal
+
         nano $HOME/.termux/smsquitto-conf.yaml
 
 - Installation des services (start, stop, status)
 - Installer le widget Tremux: Widget sur le téléphone en gardant votre doigt sur l'écran
+
       - Choisissez un raccourci
       - Changez l'icône et le nom si vous le souhaitez
       - Démarrez, arrêtez ou service d'état en cliquant sur l'icône
