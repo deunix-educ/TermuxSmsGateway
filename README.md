@@ -3,27 +3,29 @@ SMS and notification gateway using Android smartphone
 
 #### Goal:
 
-Send and receive SMS or notification to a smartphone destination from any desktop using a web interface or other client.
+Make any laptop with an Internet connection a SMS gateway
+Send SMS from his desktop using a web interface or other.
+Receive SMS on his desk in order to use the content.
 
 #### Method used
 
-##### SMS emission
+- SMS sending
 
-    - SMS or notifications are created on one machine (1 or more) on the net.
-    - Messages are then published to a public or private MQTT server
-    - Smsquitto MQTT client installed on the smartphone gateway (1 or more)
-        - receive and send these messages to recipients.
+- SMS are created on one machine (1 or more) on the network.
+    - They are then published to a public or private MQTT server
+    - The messages are received on an MQTT client installed on the laptop (1 or more).
+    - The messages are then sent to the recipients.
 
 #### SMS reception
 
-    - SMS received on the smartphone gateway are published to a MQTT server.
-    - A MQTT client installed on a machine (1 or more) that have subscribed to a valid topic receive these messages
+- The SMS are received on the smartphone and published to the MQTT server
+- The messages are received on a MQTT client installed on the subscribed machine (1 or more)
 
 #### Non-exhaustive use
 
-    - Email message usage
-    - Receive and process alert messages (IOT or other)
-    - etc ...
+- Email message usage
+- Receive and process alert messages (IOT or other)
+- etc ...
 
 #### Conditions for receiving or sending
 - Take a public or private MQTT server to relay messages
@@ -42,48 +44,37 @@ Send and receive SMS or notification to a smartphone destination from any deskto
 
 https://github.com/termux/termux-app
 
-#### Termux installation
+#### Installation of termux
 - Termux application obtained by F-Droid:
     - https://www.f-droid.org/fr/
 
 - Or by google store:
     - https://play.google.com/
 
-> IMPORTANT: You must choose either one or the other repository.
+> IMPORTANT: We will choose either one or the other.
 
 - Install
     - Termux
     - Termux: API
     - Termux: Widget
 
-<<<<<<< Upstream, based on origin/main
-<<<<<<< Upstream, based on origin/main
-#### MQTT client installing:
-=======
 
-=======
->>>>>>> 721d3c3 REAME install
 #### Installing the mqtt client:
->>>>>>> 5d3172f README install
 
 The following python packages will be installed:
 
 - termux-sms-gateway
 - paho-mqtt
 - supervisor
-<<<<<<< Upstream, based on origin/main
-=======
 	- supervisor is a process control system
 	- because Android do not support hard links, it will be necessary to patch  http.py from library
->>>>>>> 5d3172f README install
 - rsa >> https://stuvel.eu/python-rsa-doc/
-
 
 ### Installation procedure
 
 After installing termux on the smartphone, launch Termux
 
-- Copy and paste the following command in the termux terminal
+- Copy and paste the following command in the terminal
 
         export PACKAGE="TermuxSmsGateway"&&
 		export VERSION="1.0"&&
@@ -100,15 +91,11 @@ After installing termux on the smartphone, launch Termux
 		cd $PREFIX/lib/python3.9/site-packages/supervisor&&
 		patch < $PACKAGE/smsquitto-install/supervisor/patch/http.py.patch
 
-- Enter to start installation
+- Enter to start the installation
 
 ### Installation parameters
 
-<<<<<<< Upstream, based on origin/main
-- Installation parameters are in ~/.termux/smsquitto-conf.yaml
-=======
 - smsquitto server parameters are in ~/.termux/smsquitto-conf.yaml
->>>>>>> 5d3172f README install
     - host: ip or domain of the MQTT server
     - port: 1883 or 8883
     - keepalive: 60
@@ -132,7 +119,7 @@ After installing termux on the smartphone, launch Termux
 
 ### Uses
 
-- A MQTT client is required to the phone.
+- A MQTT client is required to operate the phone.
     - The smsquittod.py module gives an example of a client written in python.
         - Library is the Eclipse foundation paho-mqtt
         - Simply implemente ClientMQTTBase class
@@ -144,7 +131,7 @@ After installing termux on the smartphone, launch Termux
             - by an address of this type
                 - file: ///path/to/file/sms-client.html
 
-- Demonstration
+- demonstration
 
      - sms-client.html is fully functional
      - You just have to update the apikey in this file and in the configuration file on the smartphone
