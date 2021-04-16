@@ -92,7 +92,7 @@ After installing termux on the smartphone, launch Termux
 
 - Enter to start the installation
 
-### Configuration server installation
+### Server configuration
 
 - smsquitto config server are in ~/.termux/smsquitto-conf.yaml
     - host: ip or domain of the MQTT server
@@ -156,7 +156,7 @@ After installing termux on the smartphone, launch Termux
 
     - SSL certification
         - argument --tls, in $7 or $8.
-        - the certification key is in domoticz/scripts/smsquitto.py.
+        - certification key in domoticz/scripts/smsquitto.py.
 
     - You must install python3 paho-mqtt library: pip3 install paho-mqtt
 
@@ -165,15 +165,15 @@ After installing termux on the smartphone, launch Termux
 Message sent and received format:
 
 - (topic, payload)
-    - topic: is a string that starts with apikey see above
+    - topic: string that starts with apikey see above
         - apikey/pub/sms
         - apikey/emit/inbox
     - payload: is a Json string
         - {mobile: [mobile1, mobile2, etc ...], subject: "the subject", msg: "the message"}
         - {time: time, payload: payload}
 - topics
-    - apikey/pub/sms send SMS
-    - apikey/pub/notify send notification
-    - apikey/pub/location request for Geographic positioning
-    - apikey/pub/inbox or all or sent or draft or outbox Read SMS message
-    - apikey/pub/kill-service stop the service
+    - apikey/pub/sms --> send SMS
+    - apikey/pub/notify --> send notification
+    - apikey/pub/location --> request for Geographic positioning
+    - apikey/pub/inbox --> or all or sent or draft or outbox Read SMS message
+    - apikey/pub/kill-service --> stop the service
