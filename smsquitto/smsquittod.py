@@ -14,6 +14,7 @@ def yaml_load(f):
         return yaml.load(stream, Loader=yaml.FullLoader)
     return {}
 
+
 class ClientMQTTBase(mqtt.Client):
     def __init__(self,
             host='localhost',
