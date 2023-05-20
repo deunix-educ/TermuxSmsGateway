@@ -78,6 +78,7 @@ After installing termux on the smartphone, launch Termux
         export PACKAGE="TermuxSmsGateway"&&
 		export VERSION="1.0"&&
 		mkdir -p $HOME/.termux/tasks&&
+		mkdir -p $HOME/.termux/boot&&
         apt install python git termux-api -y&&
 		rm -rf TermuxSmsGateway&&
         git clone https://github.com/deunix-educ/TermuxSmsGateway.git&&
